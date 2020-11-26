@@ -1,0 +1,6 @@
+5
+Madera,Bello,5
+Bello,Niquia,3
+Niquia,America,15
+America,Poblado,10
+Poblado,Bello,13
