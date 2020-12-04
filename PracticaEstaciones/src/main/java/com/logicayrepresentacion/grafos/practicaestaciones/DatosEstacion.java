@@ -54,4 +54,13 @@ public class DatosEstacion {
         return estaciones;
     }
 
+    public Estacion buscar(String ciudad1) {
+        NodoAVL<Estacion> nodo = arbolAVL.buscar(new Estacion(ciudad1, -1));
+        if (nodo == null) {
+            return null;
+        } else {
+            return (Estacion) nodo.getDato();
+        }
+    }
+
 }
