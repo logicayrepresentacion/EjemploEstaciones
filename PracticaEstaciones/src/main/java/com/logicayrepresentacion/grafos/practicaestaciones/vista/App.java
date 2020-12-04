@@ -30,6 +30,38 @@ public class App extends javax.swing.JFrame {
      */
     public App() {
         initComponents();
+        try {
+            // TODO add your handling code here:
+            System.out.println("Carga del archivo");
+            // ToDo - Cargar el archivo
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("estaciones.txt"));
+            String linea;
+            linea = bufferedReader.readLine();
+            int cantidadEstaciones = Integer.parseInt(linea);
+            datosEstacion = new DatosEstacion(cantidadEstaciones);
+            grafo = new Grafo(cantidadEstaciones);
+            while ((linea = bufferedReader.readLine()) != null) {
+                String[] partes = linea.split(",");
+                String ciudad1 = partes[0];
+                String ciudad2 = partes[1];
+                int distancia = Integer.parseInt(partes[2]);
+                Estacion estacion1 = datosEstacion.add(ciudad1);
+                Estacion estacion2 = datosEstacion.add(ciudad2);
+                grafo.addAdyancencia(estacion1.getId(), estacion2.getId(), distancia);
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NumberFormatException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (CantidadEstacionesException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println("Fin carga del archivo");
+        grafo.obtenerRuta(2, 4);
+        lienzo1.setObjArbol(datosEstacion);
+        lienzo1.repaint();
     }
 
     /**
@@ -172,38 +204,7 @@ public class App extends javax.swing.JFrame {
 
     private void openMenuItemMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_openMenuItemMousePressed
         // TODO add your handling code here:
-        try {
-            // TODO add your handling code here:
-            System.out.println("Carga del archivo");
-            // ToDo - Cargar el archivo
-            BufferedReader bufferedReader = new BufferedReader(new FileReader("estaciones.txt"));
-            String linea;
-            linea = bufferedReader.readLine();
-            int cantidadEstaciones = Integer.parseInt(linea);
-            datosEstacion = new DatosEstacion(cantidadEstaciones);
-            grafo = new Grafo(cantidadEstaciones);
-            while ((linea = bufferedReader.readLine()) != null) {
-                String[] partes = linea.split(",");
-                String ciudad1 = partes[0];
-                String ciudad2 = partes[1];
-                int distancia = Integer.parseInt(partes[2]);
-                Estacion estacion1 = datosEstacion.add(ciudad1);
-                Estacion estacion2 = datosEstacion.add(ciudad2);
-                grafo.addAdyancencia(estacion1.getId(), estacion2.getId(), distancia);
-            }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NumberFormatException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (CantidadEstacionesException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        System.out.println("Fin carga del archivo");
-        grafo.obtenerRuta(2, 4);
-        lienzo1.setObjArbol(datosEstacion);
-        lienzo1.repaint();
+
     }//GEN-LAST:event_openMenuItemMousePressed
 
     /**
