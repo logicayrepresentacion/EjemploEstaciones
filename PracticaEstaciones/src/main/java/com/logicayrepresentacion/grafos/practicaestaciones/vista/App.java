@@ -9,9 +9,13 @@ import com.logicayrepresentacion.grafos.practicaestaciones.CantidadEstacionesExc
 import com.logicayrepresentacion.grafos.practicaestaciones.DatosEstacion;
 import com.logicayrepresentacion.grafos.practicaestaciones.Estacion;
 import com.logicayrepresentacion.grafos.practicaestaciones.Grafo;
+import static com.logicayrepresentacion.grafos.practicaestaciones.vista.Lienzo.DIAMETRO;
+import java.awt.geom.Ellipse2D;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,10 +34,10 @@ public class App extends javax.swing.JFrame {
      */
     public App() {
         initComponents();
+
+        // Carga los datos de las estaciones leyendo el archivo estaciones.txt
+        // de la ruta de ejecución
         try {
-            // TODO add your handling code here:
-            System.out.println("Carga del archivo");
-            // ToDo - Cargar el archivo
             BufferedReader bufferedReader = new BufferedReader(new FileReader("estaciones.txt"));
             String linea;
             linea = bufferedReader.readLine();
@@ -58,9 +62,32 @@ public class App extends javax.swing.JFrame {
         } catch (CantidadEstacionesException ex) {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("Fin carga del archivo");
-        grafo.obtenerRuta(2, 4);
+
+        // Carga los datos de las posiciones del grafico desde el archivo
+        // grafico
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("grafico.txt"));
+            String linea;
+            while ((linea = bufferedReader.readLine()) != null) {
+                String[] partes = linea.split(",");
+                String nombreEstacion = partes[0];
+                String coordenada1Str = partes[1];
+                String coordenada2Str = partes[2];
+                double coordenada1 = Double.parseDouble(coordenada1Str);
+                double coordenada2 = Double.parseDouble(coordenada2Str);
+                Estacion estacion = datosEstacion.buscar(nombreEstacion);
+                estacion.setForma(new Ellipse2D.Double(coordenada1, coordenada2, DIAMETRO + 50, DIAMETRO));
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NumberFormatException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         lienzo1.setObjArbol(datosEstacion);
+
         lienzo1.repaint();
     }
 
@@ -119,6 +146,11 @@ public class App extends javax.swing.JFrame {
 
         saveMenuItem.setMnemonic('s');
         saveMenuItem.setText("Save");
+        saveMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveMenuItemActionPerformed(evt);
+            }
+        });
         fileMenu.add(saveMenuItem);
 
         saveAsMenuItem.setMnemonic('a');
@@ -206,6 +238,36 @@ public class App extends javax.swing.JFrame {
         // TODO add your handling code here:
 
     }//GEN-LAST:event_openMenuItemMousePressed
+
+    /**
+     * Se utiliza para almacenar las posiciones de las estaciones y poderlas
+     * volver a cargar
+     *
+     * @param evt
+     */
+    private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
+
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter("grafico.txt"));
+            for (Estacion estacion : datosEstacion.getEstaciones()) {
+                writer.write(estacion.getNombre() + ","
+                        + estacion.getForma().getX() + ","
+                        + estacion.getForma().getY());
+                writer.newLine();
+            }
+            writer.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                writer.close();
+            } catch (IOException ex) {
+                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }//GEN-LAST:event_saveMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
