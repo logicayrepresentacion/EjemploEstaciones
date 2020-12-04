@@ -17,10 +17,12 @@ public class DatosEstacion {
     Estacion[] estaciones;
     ArbolAVL<Estacion> arbolAVL = new ArbolAVL();
     private static int SIGUIENTE_ID = 0;
+    private Grafo grafo;
 
     public DatosEstacion(int c) {
         SIGUIENTE_ID = 0;
         estaciones = new Estacion[c];
+        grafo = new Grafo(c);
     }
 
     public Estacion add(String ciudad1) throws CantidadEstacionesException {
@@ -61,6 +63,12 @@ public class DatosEstacion {
         } else {
             return (Estacion) nodo.getDato();
         }
+    }
+
+    public void addAdyacencia(String ciudad1, String ciudad2, int distancia) throws CantidadEstacionesException {
+        Estacion estacion1 = add(ciudad1);
+        Estacion estacion2 = add(ciudad2);
+        grafo.addAdyancencia(estacion1.getId(), estacion2.getId(), distancia);
     }
 
 }

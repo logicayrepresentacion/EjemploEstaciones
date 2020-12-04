@@ -8,7 +8,6 @@ package com.logicayrepresentacion.grafos.practicaestaciones.vista;
 import com.logicayrepresentacion.grafos.practicaestaciones.CantidadEstacionesException;
 import com.logicayrepresentacion.grafos.practicaestaciones.DatosEstacion;
 import com.logicayrepresentacion.grafos.practicaestaciones.Estacion;
-import com.logicayrepresentacion.grafos.practicaestaciones.Grafo;
 import static com.logicayrepresentacion.grafos.practicaestaciones.vista.Lienzo.DIAMETRO;
 import java.awt.geom.Ellipse2D;
 import java.io.BufferedReader;
@@ -27,7 +26,6 @@ import java.util.logging.Logger;
 public class App extends javax.swing.JFrame {
 
     private DatosEstacion datosEstacion;
-    private Grafo grafo;
 
     /**
      * Creates new form App
@@ -43,15 +41,13 @@ public class App extends javax.swing.JFrame {
             linea = bufferedReader.readLine();
             int cantidadEstaciones = Integer.parseInt(linea);
             datosEstacion = new DatosEstacion(cantidadEstaciones);
-            grafo = new Grafo(cantidadEstaciones);
+
             while ((linea = bufferedReader.readLine()) != null) {
                 String[] partes = linea.split(",");
                 String ciudad1 = partes[0];
                 String ciudad2 = partes[1];
                 int distancia = Integer.parseInt(partes[2]);
-                Estacion estacion1 = datosEstacion.add(ciudad1);
-                Estacion estacion2 = datosEstacion.add(ciudad2);
-                grafo.addAdyancencia(estacion1.getId(), estacion2.getId(), distancia);
+                datosEstacion.addAdyacencia(ciudad1, ciudad2, distancia);
             }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
