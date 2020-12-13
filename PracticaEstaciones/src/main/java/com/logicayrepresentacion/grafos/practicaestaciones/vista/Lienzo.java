@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.QuadCurve2D;
 
 /**
  *
@@ -32,8 +33,9 @@ public class Lienzo extends javax.swing.JPanel {
         super.paint(g); //To change body of generated methods, choose Tools | Templates.
 
         Graphics2D g2 = (Graphics2D) g;
-
+        Color natularColor = g2.getColor();
         if (datosEstacion != null) {
+            // Este fragmento inicializa las ellipses de la estación en caso no existan
             for (Estacion esta : datosEstacion.getEstaciones()) {
                 Ellipse2D elipse = esta.getForma();
                 if (elipse == null) {
@@ -43,6 +45,51 @@ public class Lienzo extends javax.swing.JPanel {
                     esta.setForma(elipse);
                 }
                 g2.draw(elipse);
+                String nombre = esta.getId() + " " + esta.getNombre();
+                g2.drawString(nombre, (float) elipse.getX(), (float) elipse.getY());
+            }
+
+            // Este fragmento pinta las lineas de relación entre un nodo y otro de salida
+            int[][] matrizAdy = datosEstacion.getGrafo().getMatrizAdy();
+            int[][] matrizCostos = datosEstacion.getGrafo().getMatrizCostos();
+            for (int i = 0; i < matrizAdy.length; i++) {
+
+                for (int j = i; j < matrizAdy.length; j++) {
+                    int ady = matrizAdy[i][j];
+                    if (ady != 0) {
+                        Estacion estacion1i = datosEstacion.getEstacion(i);
+                        Double x1 = estacion1i.getForma().getCenterX();
+                        Double y1 = estacion1i.getForma().getCenterY();
+
+                        Estacion estacion2j = datosEstacion.getEstacion(j);
+                        Double x2 = estacion2j.getForma().getCenterX();
+                        Double y2 = estacion2j.getForma().getCenterY();
+                        Double ctx = ((x1 + x2) / 2) + 2;
+                        Double cty = ((y1 + y2) / 2) + 2;
+                        g2.setPaint(Color.GREEN);
+                        g2.drawString("" + matrizCostos[i][j], ctx.intValue(), cty.intValue());
+                        g2.setPaint(Color.BLUE);
+                        g2.drawLine(x1.intValue(), y1.intValue(), x2.intValue(), y2.intValue());
+                        //g2.draw(q);
+
+                        estacion1i = datosEstacion.getEstacion(j);
+                        x1 = estacion1i.getForma().getCenterX();
+                        y1 = estacion1i.getForma().getCenterY();
+
+                        estacion2j = datosEstacion.getEstacion(i);
+                        x2 = estacion2j.getForma().getCenterX();
+                        y2 = estacion2j.getForma().getCenterY();
+                        ctx = (x1 + x2) / 2 + 30;
+                        cty = (y1 + y2) / 2 + 30;
+                        QuadCurve2D q = new QuadCurve2D.Double();
+                        q = new QuadCurve2D.Double();
+                        q.setCurve(x2, y2, ctx, cty, x1, y1);
+
+                        g2.setPaint(Color.BLUE);
+                        g2.draw(q);
+
+                    }
+                }
             }
         }
     }
@@ -96,7 +143,6 @@ public class Lienzo extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
-        System.out.println("Me hicieron formMouseDragged en " + evt.getX() + " " + evt.getY());
         if (estacionSeleccionada != null) {
             Ellipse2D elipse = new Ellipse2D.Double(evt.getX(), evt.getY(),
                     DIAMETRO + 50,
@@ -107,19 +153,21 @@ public class Lienzo extends javax.swing.JPanel {
     }//GEN-LAST:event_formMouseDragged
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
-        System.out.println("Me hicieron formMousePressed en " + evt.getX() + " " + evt.getY());
+
         for (Estacion estacion : datosEstacion.getEstaciones()) {
             Ellipse2D figura = estacion.getForma();
             System.out.println("evaluando " + figura);
             if (figura.contains(evt.getX(), evt.getY())) {
                 System.out.println("Me hicieron formMousePressed en " + estacion.getNombre());
                 Graphics2D g2 = (Graphics2D) this.getGraphics();
-                g2.setPaint(Color.red);
+                g2.setPaint(Color.RED);
                 g2.fill(figura);
                 estacionSeleccionada = estacion;
                 break;
             }
         }
+        datosEstacion.obtenerCostoMinimo(estacionSeleccionada.getId());
+
     }//GEN-LAST:event_formMousePressed
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked

@@ -7,6 +7,7 @@ package com.logicayrepresentacion.grafos.practicaestaciones;
 
 import arbol.binario.listaligada.busqueda.avl.ArbolAVL;
 import arbol.binario.listaligada.busqueda.avl.NodoAVL;
+import javax.swing.JTextPane;
 
 /**
  *
@@ -17,9 +18,12 @@ public class DatosEstacion {
     Estacion[] estaciones;
     ArbolAVL<Estacion> arbolAVL = new ArbolAVL();
     private static int SIGUIENTE_ID = 0;
-    private Grafo grafo;
+    private final Grafo grafo;
 
-    public DatosEstacion(int c) {
+    private JTextPane costoMinimojTextPane1;
+    private JTextPane matrizAdyjTextPane1;
+
+    public DatosEstacion(int c, JTextPane costoMinimojTextPane1, JTextPane matrizAdyjTextPane1) {
         SIGUIENTE_ID = 0;
         estaciones = new Estacion[c];
         grafo = new Grafo(c);
@@ -69,6 +73,68 @@ public class DatosEstacion {
         Estacion estacion1 = add(ciudad1);
         Estacion estacion2 = add(ciudad2);
         grafo.addAdyancencia(estacion1.getId(), estacion2.getId(), distancia);
+    }
+
+    public Grafo getGrafo() {
+        return grafo;
+    }
+
+    public Estacion getEstacion(int x) {
+        return estaciones[x];
+    }
+
+    public void obtenerCostoMinimo(int vi) {
+        StringBuilder cadena = new StringBuilder();
+        Costo[] costoMinimo = grafo.dijkstra(vi);
+        for (Costo costo : costoMinimo) {
+            cadena.append(costo + " - ");
+        }
+
+        System.out.println("Costo minimo " + vi + " " + cadena);
+        if (costoMinimojTextPane1 != null) {
+            costoMinimojTextPane1.setText(cadena.toString());
+        }
+
+    }
+
+    public String parseMatrizAdy() {
+        StringBuilder matrizEnTexto = new StringBuilder();
+
+        int[][] matrizAdy = grafo.getMatrizAdy();
+
+        for (int i = 0; i < matrizAdy.length; i++) {
+            matrizEnTexto.append("   " + i);
+        }
+        matrizEnTexto.append("\n");
+
+        for (int i = 0; i < matrizAdy.length; i++) {
+            matrizEnTexto.append(i + "   ");
+            for (int j = 0; j < matrizAdy.length; j++) {
+                matrizEnTexto.append(matrizAdy[i][j] + "   ");
+            }
+            matrizEnTexto.append("\n");
+        }
+        return matrizEnTexto.toString();
+    }
+
+    public String parseMatrizCostos() {
+        StringBuilder matrizEnTexto = new StringBuilder();
+
+        int[][] matriz = grafo.getMatrizCostos();
+
+        for (int i = 0; i < matriz.length; i++) {
+            matrizEnTexto.append("   " + i);
+        }
+        matrizEnTexto.append("\n");
+
+        for (int i = 0; i < matriz.length; i++) {
+            matrizEnTexto.append(i + "   ");
+            for (int j = 0; j < matriz.length; j++) {
+                matrizEnTexto.append(matriz[i][j] + "   ");
+            }
+            matrizEnTexto.append("\n");
+        }
+        return matrizEnTexto.toString();
     }
 
 }

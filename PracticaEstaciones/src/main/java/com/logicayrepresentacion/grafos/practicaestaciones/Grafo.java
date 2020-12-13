@@ -11,7 +11,7 @@ package com.logicayrepresentacion.grafos.practicaestaciones;
  */
 public class Grafo {
 
-    private int[][] matrizAdy;
+    private final int[][] matrizAdy;
     private int[][] matrizCostos;
 
     public Grafo(int cantidadEstaciones) {
@@ -26,14 +26,13 @@ public class Grafo {
         matrizCostos[vj][vi] = distancia;
     }
 
-    public Ruta obtenerRuta(int vi, int vj) {
-        Ruta ruta = new Ruta();
+    public Costo[] dijkstra(int vi) {
 
         Costo[][] costos = new Costo[matrizCostos.length][matrizCostos.length];
         for (int i = 0; i < matrizCostos.length; i++) {
             for (int j = 0; j < matrizCostos.length; j++) {
                 if (matrizAdy[i][j] == 0) {
-                    costos[i][j] = new Costo();
+                    costos[i][j] = Costo.getIndeterminado();
                 } else {
                     costos[i][j] = new Costo(matrizCostos[i][j]);
                 }
@@ -54,15 +53,16 @@ public class Grafo {
             indice++;
             for (int j = 0; j < visitados.length; j++) {
                 if (visitados[j] == 0) {
-                    Costo costo1 = costoMinimo[j];
-                    Costo distancia = costos[w][j];
-                    Costo costo2 = Costo.sumar(costoMinimo[w], distancia);
-                    costoMinimo[j] = Costo.menor(costo1, costo2);
+                    Costo costoJ = costoMinimo[j];
+                    Costo distanciaWJ = costos[w][j];
+                    Costo costo2 = Costo.sumar(costoMinimo[w], distanciaWJ);
+                    costoMinimo[j] = Costo.menor(costoJ, costo2);
                 }
             }
         }
-        
-        return ruta;
+
+        return costoMinimo;
+
     }
 
     private int escogerMenor(Costo[] costoMinimo, int[] visitados) {
@@ -78,6 +78,14 @@ public class Grafo {
             }
         }
         return w;
+    }
+
+    public int[][] getMatrizAdy() {
+        return matrizAdy;
+    }
+
+    public int[][] getMatrizCostos() {
+        return matrizCostos;
     }
 
 }

@@ -1,5 +1,10 @@
-Madera,150.0,98.0
-Bello,97.0,178.0
-Niquia,225.0,210.0
-America,33.0,237.0
-Poblado,36.0,77.0
+Madera,349.0,158.0
+Bello,159.0,149.0
+Niquia,32.0,133.0
+America,47.0,245.0
+Poblado,253.0,254.0
+Alpujarra,39.0,52.0
+Arvi,184.0,68.0
+Floresta,280.0,50.0
+Cisneros,357.0,96.0
+Sabaneta,292.0,336.0

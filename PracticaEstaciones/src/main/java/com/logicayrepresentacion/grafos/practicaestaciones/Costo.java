@@ -30,15 +30,20 @@ public class Costo implements Comparable {
 
     private final Integer valor;
     private final boolean infinito;
+    private static final Costo indeterminado = new Costo();
 
     public Costo(Integer valor) {
         this.valor = valor;
         this.infinito = false;
     }
 
-    public Costo() {
+    private Costo() {
         valor = 0;
         infinito = true;
+    }
+
+    public static Costo getIndeterminado() {
+        return indeterminado;
     }
 
     @Override
